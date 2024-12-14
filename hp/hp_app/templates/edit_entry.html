@@ -1,0 +1,298 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>STORE MANAGEMENT HPCL HUBLI LPG PLANT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+
+/* Ensure the body takes up the full height of the viewport */
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 100vh; /* Ensure the body covers the full height of the page */
+}
+
+/* Create the watermark effect */
+body::before {
+    content: "";
+    position: fixed; /* Use fixed to ensure it covers the entire screen, even on scrolling */
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: url('{% static "img/logo.jpg" %}') no-repeat center center;
+    background-size: cover; /* Cover the entire background */
+    opacity: 0.1; /* Adjust opacity for faint watermark effect */
+    pointer-events: none; /* Prevent it from blocking interactions */
+    z-index: -1; /* Ensure it's behind all content */
+}
+
+        /* Add border styling to the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 2px solid #34495e;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        th {
+            background-color: #2A3663;
+            color: #ffffff;
+        }
+
+        td {
+            background-color: #f4f4f4;
+            color: #34495e;
+        }
+
+        /* Optionally add hover effect to table rows */
+        tr:hover {
+            background-color: #e8e8e8;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            font-weight: bold;
+        }
+
+        /* Style the labels */
+       .form-label {
+    font-weight: bold !important; /* Force bold styling */
+    font-size: 1.1rem;
+    color: #2A3663;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+
+        /* Style the input fields */
+        .form-control {
+            border-radius: 5px; /* Rounded corners for input fields */
+            border: 2px solid #ccc; /* Light grey border */
+            padding: 10px; /* Slight padding for better spacing */
+        }
+
+        .form-control:focus {
+            border-color: #2A3663; /* Focus border color */
+            box-shadow: 0 0 5px rgba(42, 54, 99, 0.5); /* Add shadow effect when focused */
+        }
+    </style>
+
+</head>
+
+<body>
+    {% include 'admin_nav.html' %}
+    <script>
+        // New function to fetch sender details when a name is selected
+function fetchvendorDetails() {
+    const vendor = document.getElementById('vendor').value;
+
+    if (vendor) {
+        fetch(`/get_vendor_details?name=${encodeURIComponent(vendor)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched sender details:', data); // Debugging: Check the data in the console
+
+                // Populate the form fields with the fetched data
+                document.getElementById('vendorcompany').value = data.companyName || '';
+                           })
+            .catch(error => console.error('Error fetching sender details:', error));
+    }
+}
+
+        // New function to fetch sender details when a name is selected
+function fetchspareDetails() {
+    const sparetpart = document.getElementById('sparetpart').value;
+
+    if (sparetpart) {
+        fetch(`/get_spare_details?name=${encodeURIComponent(sparetpart)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched sender details:', data); // Debugging: Check the data in the console
+
+                // Populate the form fields with the fetched data
+                document.getElementById('sparetpartNo').value = data.sparepartNo || '';
+                           })
+            .catch(error => console.error('Error fetching sender details:', error));
+    }
+}
+       $(document).ready(function() {
+    // Update Balance Quantity
+    function updateBalance() {
+        const quantity = parseFloat($('#quantity').val()) || 0;
+        const issuedQty = parseFloat($('#issuedqty').val()) || 0;
+        $('#balancedqty').val(quantity - issuedQty);
+    }
+
+    // Trigger update when quantity or issued qty changes
+    $('#quantity, #issuedqty').on('input', updateBalance);
+});
+
+    </script>
+<div class="container mt-5">
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+  <!-- Vendor and Details -->
+<div class="row">
+  <div class="col-md-3">
+        <div class="form-group">
+            <label for="entryId">Entry ID</label>
+            <input type="text" class="form-control" id="entryId" value="{{ entry_id }}" name="vendorcompany">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="vendor">Select Vendor</label>
+            <select class="form-control" id="vendor" name="vendor" onchange="fetchvendorDetails()" required>
+                <option value="{{ vendordeatils.vendorName }}">{{ vendordeatils.vendorName }}</option>
+                {% for vendor in vendor %}
+                    <option value="{{ vendor.vendorName }}">{{ vendor.vendorName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="vendorcompany">Vendor Company</label>
+            <input type="text" class="form-control" id="vendorcompany" value="{{ vendordeatils.vendorCompany }}" name="vendorcompany">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="employee">Received By</label>
+            <select class="form-control" id="employee" name="employee" required>
+                <option value="{{ vendordeatils.receivedBy }}">{{ vendordeatils.receivedBy }}</option>
+                {% for employee in employee %}
+                    <option value="{{ employee.fullname }}">{{ employee.fullname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+</div>
+
+    <hr>
+{% for spare_part_details in spare_part_details %}
+    <!-- Spare Part Details -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="machine">Select Machine</label>
+                <select class="form-control" id="machine" name="machine">
+                    <option value="{{ spare_part_details.machineName }}">{{ spare_part_details.machineName }}</option>
+                    {% for machine in machine %}
+                        <option value="{{ machine.machine }}">{{ machine.machine }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpart">Spare Part</label>
+                <select class="form-control" id="sparetpart" name="sparetpart" onchange="fetchspareDetails()">
+                    <option value="{{ spare_part_details.sparePart }}">{{ spare_part_details.sparePart }}</option>
+                    {% for spareParts in spareParts %}
+                        <option value="{{ spareParts.sparepart }}">{{ spareParts.sparepart }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpartNo">Spare Part No</label>
+                <input type="text" class="form-control" value="{{ spare_part_details.sparePartNo }}" id="sparetpartNo" name="sparetpartNo">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="manufacturer">Manufacturer</label>
+                <input type="text" class="form-control" value="{{ spare_part_details.manufacturerName }}" id="manufacturer" name="manufacturer">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="rate">Rate</label>
+                <input type="number" step="any" value="{{ spare_part_details.rate }}" class="form-control" id="rate" name="rate">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="quantity">Issued Quantity</label>
+                <input type="number" step="any" class="form-control" value="{{ spare_part_details.issuedqty }}" id="quantity" name="quantity">
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="po">PO Number</label>
+                <input type="text" class="form-control" id="po" value="{{ spare_part_details.po }}" name="po">
+            </div>
+        </div>
+
+    </div>
+{% endfor %}
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- JavaScript for toggling Employee Dashboard -->
+</body>
+
+</html>
+

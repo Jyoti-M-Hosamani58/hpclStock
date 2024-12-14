@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Inward Print</title>
+    <style>
+      @media print {
+    .btn-download {
+        display: none; /* Hide button during printing */
+    }
+    .btn-print {
+        display: none; /* Hide print button during print */
+    }
+
+    /* Default settings (assumed to be A4) */
+    @page {
+        size: A4;
+            margin: 58px 45px 30px; /* Top margin: 50px, Right margin: 10px, Bottom margin: 10px, Left margin: 10px */
+    }
+
+}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .company-details, .vendor-details, .entry-info {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .company-details {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .details-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .details-section .left, .details-section .right {
+            width: 30%;
+        }
+        .details-section .left p, .details-section .right p {
+            margin: 5px 0;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table, .table th, .table td {
+            border: 1px solid black;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .signature img {
+            border-top: 1px solid black;
+            width: 150px;
+        }
+      .btn-print {
+            display: inline-block;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 20px auto; /* Adds margin for spacing */
+        }
+        .btn-print:hover {
+            background-color: darkred;
+        }
+        .print-container {
+            text-align: center; /* Centers the button */
+        }
+    </style>
+</head>
+<body>
+ <div class="print-container">
+        <a href="javascript:window.print()" class="btn btn-danger btn-print">Print</a>
+    </div>
+    <div class="header">
+        <div class="company-details">
+            <p>HPCL Hubli LPG Plant</p>
+            <p>HPCL, 165/166 KIADB Industrial Area,<br> Belur, Dharwad, <br>Karnataka 580011</p>
+        </div>
+    </div>
+
+    <div class="details-section">
+        <!-- Entry ID and Date on the left -->
+        <div class="right">
+           <p>{{ vendordetails.vendorName }}</p>
+            <p>{{ vendordetails.companyName }}</p>
+            <p>{{ vendordetails.vendorAddress }}</p>
+            <p>{{ vendordetails.companyPhone }}</p>
+            <p>{{ vendordetails.vendorPhone }}</p>
+
+        </div>
+
+        <!-- Vendor details on the right -->
+        <div class="left">
+             <p><strong>Entry ID:</strong> {{ stock.entryId }}</p>
+            <p><strong>Date:</strong> {{ stock.date }}</p>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sl No</th>
+                <th>PO Number</th>
+                <th>SparePart No</th>
+                <th>SparePart</th>
+                <th>SparePart Size</th>
+                <th>Received Qty</th>
+                <th>Remark</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stock_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.po }}</td>
+                <td>{{ item.sparePartNo }}</td>
+                <td>{{ item.sparePart }}</td>
+                <td>{{ item.sparepartsize }}</td>
+                <td>{{ item.issuedqty }}</td>
+                <td>{{ item.remark }}</td>
+                <td>{{ item.rate }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="signature">
+        <p><strong>Receiver's Signature:</strong></p>
+       <!-- <img src="{{ signature_url }}" alt="Receiver's Signature">-->
+    </div>
+</body>
+</html>

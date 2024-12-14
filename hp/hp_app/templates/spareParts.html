@@ -1,0 +1,447 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>STORE MANAGEMENT HPCL HUBLI LPG PLANT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+              /* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td ,tr{
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #2c3e50; /* Apply border to both td and th */
+}
+
+thead {
+    background-color: #2c3e50; /* Dark background for header */
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ensure the body takes up the full height of the viewport */
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 100vh; /* Ensure the body covers the full height of the page */
+}
+
+/* Create the watermark effect */
+body::before {
+    content: "";
+    position: fixed; /* Use fixed to ensure it covers the entire screen, even on scrolling */
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: url('{% static "img/logo.jpg" %}') no-repeat center center;
+    background-size: cover; /* Cover the entire background */
+    opacity: 0.1; /* Adjust opacity for faint watermark effect */
+    pointer-events: none; /* Prevent it from blocking interactions */
+    z-index: -1; /* Ensure it's behind all content */
+}
+
+        /* Add border styling to the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 2px solid #34495e;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        th {
+            background-color: #2A3663;
+            color: #ffffff;
+        }
+
+        td {
+            background-color: #f4f4f4;
+            color: #34495e;
+        }
+
+        /* Optionally add hover effect to table rows */
+        tr:hover {
+            background-color: #e8e8e8;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            font-weight: bold;
+        }
+
+        /* Style the labels */
+       .form-label {
+            font-weight: bold !important; /* Force bold styling */
+            font-size: 1.1rem;
+            color: #2A3663;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Style the input fields */
+        .form-control {
+            border-radius: 5px; /* Rounded corners for input fields */
+            border: 2px solid #ccc; /* Light grey border */
+            padding: 10px; /* Slight padding for better spacing */
+        }
+
+        .form-control:focus {
+            border-color: #2A3663; /* Focus border color */
+            box-shadow: 0 0 5px rgba(42, 54, 99, 0.5); /* Add shadow effect when focused */
+        }
+/* Eye icon styling */
+.eye-icon {
+    cursor: pointer;
+    font-size: 24px;
+    color: #007bff;
+}
+
+/* Modal is hidden by default */
+.modal {
+    display: none; /* Modal is hidden initially */
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+/* Rest of your styles remain unchanged */
+.modal-content {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    </style>
+
+</head>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<body>
+    {% include 'admin_nav.html' %}
+    <div class="container mt-5">
+        <h2>Add Spare Parts</h2>
+    </div>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="machine">Select Machine</label>
+        <select class="form-control" id="machine" name="machine" required>
+            {% for machine in machines %}
+                <option value="{{ machine.machine }}">{{ machine.machine }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="sparePartsContainer"></div>
+
+    <button type="button" id="addSparePart" class="btn btn-secondary">Add Spare Part</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .form-row {
+        display: flex;
+        flex-wrap: wrap; /* Allows wrapping if screen size is small */
+        justify-content: space-between; /* Ensures space between columns */
+    }
+    .form-group {
+        margin: 5px;
+        flex: 1; /* Makes each form group take equal space */
+    }
+    .form-group input, .form-group textarea {
+        width: 100%; /* Makes inputs take full width of their container */
+    }
+    .btn-group {
+        margin-top: 20px;
+    }
+</style>
+
+<style>
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .form-group {
+        margin: 5px;
+        flex: 1; /* Makes each form group take equal space */
+    }
+    .form-group input, .form-group textarea {
+        width: 100%; /* Makes inputs take full width of their container */
+    }
+    .sizeContainer {
+        display: flex;
+        flex-direction: column;
+    }
+    .sizeRow {
+        display: flex;
+        align-items: center; /* Align input and buttons on the same line */
+        margin-bottom: 5px;
+    }
+    .sizeRow .form-group {
+        flex: 1;
+        margin-right: 10px;
+    }
+    .sizeRow button {
+        margin-left: 10px; /* Adds space between input and button */
+    }
+    /* Adjust the Add Size button to appear next to remove button */
+    .sizeRow .btn-group {
+        display: flex;
+        align-items: center;
+    }
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+</style>
+<script>
+$(document).ready(function () {
+    let rowCount = 0;
+
+    $('#addSparePart').click(function () {
+        rowCount++;
+
+        const newRow = `
+            <div class="sparePartRow" id="row-${rowCount}">
+                <h5>Spare Part ${rowCount}</h5>
+
+                <div class="form-row">
+                    <!-- Spare Part Name -->
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="sparetpart_${rowCount}" placeholder="Spare Part Name" required>
+                    </div>
+                    <!-- Spare Part No -->
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="sparetpartNo_${rowCount}" placeholder="Spare Part No" required>
+                    </div>
+                    <!-- Description -->
+                    <div class="form-group">
+                        <textarea class="form-control" name="description_${rowCount}" placeholder="Description"></textarea>
+                    </div>
+                    <!-- Photo -->
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" name="photo_${rowCount}" accept="image/*">
+                    </div>
+                    <!-- Size Container -->
+                    <div class="form-group">
+                        <div class="sizeContainer" id="sizeContainer-${rowCount}">
+                            <!-- Dynamic size inputs will be added here -->
+                        </div>
+                        <button type="button" id="addSize-${rowCount}" class="btn btn-secondary btn-sm">Add Size</button>
+                    </div>
+                    <!-- Remove Spare Part Button -->
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger btn-sm removeRow" data-row-id="row-${rowCount}">Remove Spare Part</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('#sparePartsContainer').append(newRow);
+
+        // Add size inputs dynamically for each spare part
+        $(`#addSize-${rowCount}`).click(function () {
+            const sizeRow = `
+                <div class="sizeRow" id="sizeRow-${rowCount}-${Date.now()}">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="size_${rowCount}[]" placeholder="Size">
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm removeSize" data-size-id="sizeRow-${rowCount}-${Date.now()}">Remove Size</button>
+                </div>
+            `;
+            $(`#sizeContainer-${rowCount}`).append(sizeRow);
+        });
+
+        // Remove spare part row
+        $(document).on('click', '.removeRow', function () {
+            const rowId = $(this).data('row-id');
+            $('#' + rowId).remove();
+        });
+
+        // Remove size row
+        $(document).on('click', '.removeSize', function () {
+            const sizeId = $(this).data('size-id');
+            $('#' + sizeId).remove();
+        });
+    });
+});
+</script>
+
+{% if matching_spare_parts %}
+
+        <div class="container mt-5">
+            <h2>Spare Parts List</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>SI.No</th>
+                        <th>Machine Name</th>
+                        <th>Spare Part</th>
+                        <th>Spare Part No</th>
+                        <th>Balance QTY</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+<tbody>
+    {% for part in matching_spare_parts %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ part.sparepart.machine }}</td>
+        <td>{{ part.sparepart.sparepart }} ( {{ part.sparepart.sparepartsize }} )</td>
+        <td>{{ part.sparepart.sparepartNo }}</td>
+        <td>
+            {% if part.matching_items %}
+                <p>
+                    {% for item in part.matching_items %}
+                        <!-- Display the issued quantity for each item -->
+                        {{ item.issuedqty }}
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p> N/A</p>
+            {% endif %}
+        </td>
+        <td>{{ part.sparepart.description }}</td>
+        <td>
+            {% if part.sparepart.sparephoto %}
+                <img src="{{ part.sparepart.sparephoto.url }}" style="width:100px;height:100px;" alt="Spare Part Image">
+            {% else %}
+                <p>No photo available</p>
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'edit_spare' part.sparepart.id %}" class="btn btn-primary btn-sm">Edit</a>
+        </td>
+    </tr>
+{% empty %}
+    <tr>
+        <td colspan="8">No spare parts available</td>
+    </tr>
+    <tr>
+            <td colspan="7" class="text-center">No Spare Parts Available</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+            </table>
+        </div>
+    {% endif %}
+
+<!-- Modal for displaying the image -->
+   <!-- Modal for displaying the image -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeImage()">&times;</span>
+        <img id="modalImage" class="modal-content" alt="Spare Part Photo">
+    </div>
+ <script>
+// Function to show the modal
+function showImage(imageUrl) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+
+    modalImage.src = imageUrl; // Set the image source
+    modal.style.display = 'flex'; // Show the modal
+}
+
+// Function to hide the modal
+function closeImage() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none'; // Hide the modal
+}
+
+// Debug: Ensure the modal is hidden on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none'; // Explicitly hide the modal on page load
+});
+
+    </script>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- JavaScript for toggling Employee Dashboard -->
+
+</body>
+
+</html>
+

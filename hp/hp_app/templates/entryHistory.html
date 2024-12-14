@@ -1,0 +1,436 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>STORE MANAGEMENT HPCL HUBLI LPG PLANT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+
+/* Ensure the body takes up the full height of the viewport */
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 100vh; /* Ensure the body covers the full height of the page */
+}
+
+/* Create the watermark effect */
+body::before {
+    content: "";
+    position: fixed; /* Use fixed to ensure it covers the entire screen, even on scrolling */
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: url('{% static "img/logo.jpg" %}') no-repeat center center;
+    background-size: cover; /* Cover the entire background */
+    opacity: 0.1; /* Adjust opacity for faint watermark effect */
+    pointer-events: none; /* Prevent it from blocking interactions */
+    z-index: -1; /* Ensure it's behind all content */
+}
+    /* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td ,tr{
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #2c3e50; /* Apply border to both td and th */
+}
+
+thead {
+    background-color: #2c3e50; /* Dark background for header */
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+        /* Button styling */
+        .btn-primary {
+            font-weight: bold;
+        }
+
+        /* Style the labels */
+       .form-label {
+    font-weight: bold !important; /* Force bold styling */
+    font-size: 1.1rem;
+    color: #2A3663;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+
+        /* Style the input fields */
+        .form-control {
+            border-radius: 5px; /* Rounded corners for input fields */
+            border: 2px solid #ccc; /* Light grey border */
+            padding: 10px; /* Slight padding for better spacing */
+        }
+
+        .form-control:focus {
+            border-color: #2A3663; /* Focus border color */
+            box-shadow: 0 0 5px rgba(42, 54, 99, 0.5); /* Add shadow effect when focused */
+        }
+    </style>
+
+</head>
+
+<body>
+    {% include 'admin_nav.html' %}
+    <script>
+        // New function to fetch sender details when a name is selected
+function fetchvendorDetails() {
+    const vendor = document.getElementById('vendor').value;
+
+    if (vendor) {
+        fetch(`/get_vendor_details?name=${encodeURIComponent(vendor)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched sender details:', data); // Debugging: Check the data in the console
+
+                // Populate the form fields with the fetched data
+                document.getElementById('vendorcompany').value = data.companyName || '';
+                           })
+            .catch(error => console.error('Error fetching sender details:', error));
+    }
+}
+
+        // New function to fetch sender details when a name is selected
+
+    </script>
+    <script>
+function fetchspareDetails() {
+    const sparetpart = document.getElementById('sparetpart').value;
+
+    if (sparetpart) {
+        fetch(`/get_spare_details?name=${encodeURIComponent(sparetpart)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched spare part details:', data); // Debugging: Check the data in the console
+
+                // Populate the spare part No field
+                document.getElementById('sparetpartNo').value = data.sparepartNo || '';
+
+                // Populate the spare part size dropdown
+                const sparepartsizeDropdown = document.getElementById('sparepartsize');
+                sparepartsizeDropdown.innerHTML = ''; // Clear existing options
+
+                // Add default "Select" option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select Size --';
+                sparepartsizeDropdown.appendChild(defaultOption);
+
+                // Add new options based on fetched sizes
+                if (data.sparepartsize && Array.isArray(data.sparepartsize)) {
+                    data.sparepartsize.forEach(size => {
+                        let option = document.createElement('option');
+                        option.value = size;
+                        option.textContent = size;
+                        sparepartsizeDropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching spare part details:', error));
+    }
+}
+</script>
+
+<div class="container mt-5">
+<form method="post" action="{% url 'entryHistory' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Vendor and Details -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="vendor">Select Vendor</label>
+                <select class="form-control" id="vendor" name="vendor" onchange="fetchvendorDetails()" required>
+                    <option value="">-- Select Vendor --</option>
+                    {% for vendor in vendor %}
+                        <option value="{{ vendor.vendorName }}">{{ vendor.vendorName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="vendorcompany">Vendor Company</label>
+                <input type="text" class="form-control" id="vendorcompany" name="vendorcompany">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="employee">Received By</label>
+                <select class="form-control" id="employee" name="employee" required>
+                    <option value="">-- Select Employee --</option>
+                    {% for employee in employee %}
+                        <option value="{{ employee.fullname }}">{{ employee.fullname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="desc">Description</label>
+                <input type="text" class="form-control" id="desc" name="desc">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <!-- Spare Part Details -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="department">Select Category</label>
+                <select class="form-control" id="department" name="department">
+                    <option value="">-- Select Category --</option>
+                    {% for department in department %}
+                        <option value="{{ department.department }}">{{ department.department }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="machine">Select Machine</label>
+                <select class="form-control" id="machine" name="machine">
+                    <option value="">-- Select Machine --</option>
+                    {% for machine in machine %}
+                        <option value="{{ machine.machine }}">{{ machine.machine }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpart">Spare Part</label>
+                <select class="form-control" id="sparetpart" name="sparetpart" onchange="fetchspareDetails()">
+                    <option value="">-- Select --</option>
+                    {% for spareParts in spareParts %}
+                        <option value="{{ spareParts.sparepart }}">{{ spareParts.sparepart }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpartNo">Spare Part No</label>
+                <input type="text" class="form-control" id="sparetpartNo" name="sparetpartNo">
+            </div>
+        </div>
+        <div class="col-md-3">
+    <div class="form-group">
+        <label for="sparepartsize">Spare Part Size</label>
+        <select class="form-control" id="sparepartsize" name="sparepartsize">
+            <option value="">-- Select Size --</option>
+            <!-- Sizes will be populated dynamically -->
+        </select>
+    </div>
+</div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="manufacturer">Manufacturer</label>
+                <input type="text" class="form-control" id="manufacturer" name="manufacturer">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="rate">Rate</label>
+                <input type="number" step="any" class="form-control" id="rate" name="rate">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="issuedqty">Received Quantity</label>
+                <input type="number" step="any" class="form-control" id="issuedqty" name="issuedqty">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="remark">Remark</label>
+                <input type="text"  class="form-control" id="remark" name="remark">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="po">PO Number</label>
+                <input type="text" class="form-control" id="po" name="po">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="button" id="addSparePart" class="btn btn-secondary mt-4">Add Spare Part</button>
+        </div>
+    </div>
+
+    <!-- Spare Part Table -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered" id="sparePartTable">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Machine</th>
+                    <th>Spare Part</th>
+                    <th>Spare Part No</th>
+                    <th>Spare Part Size</th>
+                    <th>Manufacturer</th>
+                    <th>Rate</th>
+                    <th>Received Quantity</th>
+                    <th>Remark</th>
+                    <th>PO Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+
+        $('#addSparePart').click(function () {
+    const rowCount = $('#sparePartTable tbody tr').length + 1;
+
+    const department = $('#department').val();
+    const machine = $('#machine').val();
+    const sparePart = $('#sparetpart').val();
+    const sparePartNo = $('#sparetpartNo').val();
+    const sparepartsize = $('#sparepartsize').val();
+    const manufacturer = $('#manufacturer').val();
+    const rate = $('#rate').val();
+    const issuedQty = $('#issuedqty').val();
+    const remark = $('#remark').val();
+    const po = $('#po').val();
+
+    if (!department || !machine || !sparePart || !sparePartNo) {
+        alert('Please fill all required fields.');
+        return;
+    }
+
+    const newRow = `
+        <tr>
+            <td><input type="hidden" name="department_${rowCount}" value="${department}">${department}</td>
+            <td><input type="hidden" name="machine_${rowCount}" value="${machine}">${machine}</td>
+            <td><input type="hidden" name="sparetpart_${rowCount}" value="${sparePart}">${sparePart}</td>
+            <td><input type="hidden" name="sparetpartNo_${rowCount}" value="${sparePartNo}">${sparePartNo}</td>
+            <td><input type="hidden" name="sparepartsize_${rowCount}" value="${sparepartsize}">${sparepartsize}</td>
+            <td><input type="hidden" name="manufacturer_${rowCount}" value="${manufacturer}">${manufacturer}</td>
+            <td><input type="hidden" name="rate_${rowCount}" value="${rate}">${rate}</td>
+            <td><input type="hidden" name="issuedqty_${rowCount}" value="${issuedQty}">${issuedQty}</td>
+            <td><input type="hidden" name="remark_${rowCount}" value="${remark}">${remark}</td>
+            <td><input type="hidden" name="po_${rowCount}" value="${po}">${po}</td>
+            <td><button type="button" class="btn btn-danger btn-sm removeRow">Remove</button></td>
+        </tr>
+    `;
+    $('#sparePartTable tbody').append(newRow);
+
+    // Clear input fields
+    $('#department,#machine, #sparetpart, #sparetpartNo, #manufacturer, #rate, #sparepartsize, #issuedqty, #remark, #po').val('');
+});
+
+        // Remove Row
+        $(document).on('click', '.removeRow', function() {
+            $(this).closest('tr').remove();
+        });
+
+        // Prepare hidden inputs before form submission
+        $('form').submit(function() {
+            $('.dynamic-data').remove(); // Clear previous inputs
+            $('#sparePartTable tbody tr').each(function() {
+                const row = $(this);
+                const rowData = [
+                    { name: 'department[]', value: row.find('td').eq(0).text() },
+                    { name: 'machine[]', value: row.find('td').eq(1).text() },
+                    { name: 'sparetpart[]', value: row.find('td').eq(2).text() },
+                    { name: 'sparetpartNo[]', value: row.find('td').eq(3).text() },
+                    { name: 'sparepartsize[]', value: row.find('td').eq(4).text() },
+                    { name: 'manufacturer[]', value: row.find('td').eq(5).text() },
+                    { name: 'rate[]', value: row.find('td').eq(6).text() },
+                    { name: 'issuedqty[]', value: row.find('td').eq(7).text() },
+                    { name: 'remark[]', value: row.find('td').eq(8).text() },
+                    { name: 'po[]', value: row.find('td').eq(9).text() }
+                ];
+                rowData.forEach(data => {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: data.name,
+                        value: data.value,
+                        class: 'dynamic-data'
+                    }).appendTo('form');
+                });
+            });
+        });
+    });
+</script>
+
+
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- JavaScript for toggling Employee Dashboard -->
+
+</body>
+
+</html>
+

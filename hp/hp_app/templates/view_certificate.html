@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <title>Employee Registration Certificate</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .certificate-container {
+            max-width: 900px;
+            background-color: #fff;
+            border: 1px solid #333;
+            padding: 30px;
+            margin: 50px auto;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .certificate-header {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #0056b3;
+        }
+
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .form-table td {
+            padding: 10px;
+            border: 1px solid #333;
+            vertical-align: top;
+        }
+
+        .form-table td.photo-cell {
+            width: 150px;
+            text-align: center;
+        }
+
+        .photo-box {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 5px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            background-color: #e9ecef;
+            padding: 5px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .btn-print {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-print:hover {
+            background-color: #004494;
+        }
+
+        .certificate-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden; /* Prevent scrolling */
+            }
+
+            .certificate-container {
+                margin: 0;
+                box-shadow: none;
+                border: none; /* Remove border for printing */
+                page-break-inside: avoid; /* Prevent breaking inside the container */
+            }
+
+            .btn-print {
+                display: none; /* Hide print button */
+            }
+
+            .section-title, .form-table {
+                page-break-inside: avoid; /* Ensure content stays on a single page */
+            }
+
+            /* Ensure images are printed without distortion */
+            .photo-box img {
+                width: auto; /* Allow full width for printing */
+                height: auto; /* Allow full height for printing */
+                max-height: 150px; /* Limit height to avoid excessive size */
+                max-width: 150px; /* Limit width to maintain aspect ratio */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="certificate-container">
+    <div class="certificate-header">Employee Registration Certificate</div>
+
+    <table class="form-table">
+        <tr>
+            <td><b>Full Name</b></td>
+            <td>{{ employee.fullname }}</td>
+            <td><b>Gender</b></td>
+            <td>{{ employee.gender }}</td>
+            <td><b>Date of Birth</b></td>
+            <td>{{ employee.dob }}</td>
+            <td rowspan="4" class="photo-cell">
+                <div class="photo-box">
+                    {% if employee.photo %}
+                        <img src="{{ employee.photo.url }}" alt="Passport Size Photo">
+                    {% else %}
+                        <span>No Photo Available</span>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Contact</b></td>
+            <td>{{ employee.contact }}</td>
+            <td><b>Nationality</b></td>
+            <td>{{ employee.nationality }}</td>
+            <td><b>State</b></td>
+            <td>{{ employee.state }}</td>
+        </tr>
+        <tr>
+            <td><b>City</b></td>
+            <td>{{ employee.city }}</td>
+            <td><b>Pincode</b></td>
+            <td>{{ employee.pincode }}</td>
+            <td><b>District</b></td>
+            <td>{{ employee.district }}</td>
+        </tr>
+        <tr>
+            <td><b>Taluk</b></td>
+            <td>{{ employee.Taluk }}</td>
+            <td><b>Email</b></td>
+            <td>{{ employee.email }}</td>
+            <td><b>Employee Id</b></td>
+            <td>{{ employee.emp_id }}</td>
+        </tr>
+        <tr>
+            <td><b>Adhar </b></td>
+            <td>{{ employee.adhar }}</td>
+            <td><b>Pancard</b></td>
+            <td>{{ employee.pancard }}</td>
+        </tr>
+    </table>
+
+
+    <div class="section-title">Education Details</div>
+    <table class="form-table">
+        <thead class="table-light">
+            <tr>
+                <th>Qualification</th>
+                <th>Passout Year</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>10th</td>
+                <td>{{ employee.tenthpass }}</td>
+                <td>{{ employee.tenth_percentage }}</td>
+            </tr>
+            <tr>
+                <td>12th</td>
+                <td>{{ employee.twelfth_pass }}</td>
+                <td>{{ employee.twelfth_percentage }}</td>
+            </tr>
+            <tr>
+                <td>Degree</td>
+                <td>{{ employee.degreepass }}</td>
+                <td>{{ employee.degree_percentage }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div class="section-title">Job Description</div>
+    <table class="form-table">
+        <tr>
+            <td><b>Job Role</b></td>
+            <td>{{ employee.jrole }}</td>
+            <td><b>Date of Joining</b></td>
+            <td>{{ employee.doj }}</td>
+            <td><b>PF</b></td>
+            <td>{{ employee.pf }}</td>
+
+        </tr>
+    </table>
+
+     <div class="section-title">Bank Details</div>
+    <table class="form-table">
+        <tr>
+             <td><b>Bank Name</b></td>
+            <td>{{ employee.bank_name }}</td>
+            <td><b>Account holder name</b></td>
+            <td>{{ employee.account_holder_name }}</td>
+            <td><b>Bank Account number</b></td>
+            <td>{{ employee.bank_account_number }}</td>
+            <td><b>IFSC Code</b></td>
+            <td>{{ employee.ifsc_code }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">Documents</div>
+    <table class="form-table">
+        <tr>
+            <td><b>Aadhaar Document</b></td>
+            <td>
+                {% if employee.adhar_doc %}
+                    <a href="{{ employee.adhar_doc.url }}" target="_blank">View Aadhaar Document</a>
+                {% else %}
+                    No Document Available
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>PAN Card</b></td>
+            <td>
+                {% if employee.pan_doc %}
+                    <a href="{{ employee.pan_doc.url }}" target="_blank">View PAN Card</a>
+                {% else %}
+                    No Document Available
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Bank Document</b></td>
+            <td>
+                {% if employee.bank_doc %}
+                    <a href="{{ employee.bank_doc.url }}" target="_blank">View Bank Document</a>
+                {% else %}
+                    No Document Available
+                {% endif %}
+            </td>
+        </tr>
+
+    </table><br><br>
+
+    <div class="text-center mt-4">
+        <button onclick="window.print()" class="btn btn-print">Print Certificate</button>
+    </div>
+
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

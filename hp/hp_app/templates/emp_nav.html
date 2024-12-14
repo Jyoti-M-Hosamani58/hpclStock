@@ -1,0 +1,46 @@
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
+        <a href="index.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+            <h2 class="m-0 text-primary">STORE MANAGEMENT HPCL HUBLI LPG PLANT</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+              <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Customer</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'customer'  %}" class="dropdown-item">Add Customer</a>
+                        <a href="{% url 'customer_list'  %}" class="dropdown-item">View Customer</a>
+
+                    </div>
+                </div>
+                 <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Customer Booking</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'customer_book'  %}" class="dropdown-item">Customer Booking</a>
+                        <a href="{% url 'booking_list'  %}" class="dropdown-item">Booking List</a>
+
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Purchase</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'purchase_list'  %}" class="dropdown-item">Purchase List</a>
+                        <a href="{% url 'booking_list'  %}" class="dropdown-item">Booking List</a>
+
+                    </div>
+                </div>
+
+
+
+
+                <a href="{% url 'index' %}" class="nav-item nav-link">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+

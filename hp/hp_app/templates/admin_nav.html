@@ -1,0 +1,66 @@
+{% load static %}
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
+        <a href="index.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+    <!-- Image for Navbar -->
+    <img src="{% static 'img/logo1.jpg' %}" alt="HPCL Store Management" width="50" height="50" class="d-inline-block align-top">
+
+    <!-- Text beside the logo -->
+    <h2 class="m-0 text-primary ml-2">&nbsp;&nbsp;STORE MANAGEMENT HPCL</h2>
+</a>
+
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="{% url 'admin_dashboard' %}" class="nav-item nav-link active">Home</a>
+              <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Master</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'branch' %}" class="dropdown-item">Categosry</a>
+                        <a href="{% url 'jobRole' %}" class="dropdown-item">Job Role</a>
+                        <a href="{% url 'machine' %}" class="dropdown-item">Machine</a>
+                        <a href="{% url 'spareParts' %}" class="dropdown-item">Spare Part</a>
+                        <a href="{% url 'vendor' %}" class="dropdown-item">Vendor</a>
+
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Employe</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'employee' %}" class="dropdown-item">Add</a>
+                        <a href="{% url 'emp_list' %}" class="dropdown-item">List</a>
+
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Entry</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'entryHistory' %}" class="dropdown-item">Add</a>
+                        <a href="{% url 'entryHistoryList' %}" class="dropdown-item">List</a>
+                        <a href="{% url 'sparePartStock' %}" class="dropdown-item">Spare Part Stock</a>
+
+                    </div>
+                </div>
+                <!--<div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Stock Transfer</a>
+                    <div class="dropdown-menu fade-up m-0">
+                        <a href="{% url 'stockToDepartment' %}" class="dropdown-item">Stock To dept</a>
+                        <a href="{% url 'stockToDepartmentList' %}" class="dropdown-item">Stock To dept List</a>
+                        <a href="{% url 'spareStock' %}" class="dropdown-item">Stock To dept History</a>
+                        <a href="{% url 'departmentTodepartment' %}" class="dropdown-item">Dept To dept</a>
+                        <a href="{% url 'deptTodeptList' %}" class="dropdown-item">Dept To deptList</a>
+                        <a href="{% url 'deptspareStock' %}" class="dropdown-item">Dept To Dept History</a>
+                        <a href="{% url 'deptStock' %}" class="dropdown-item">Dept Stock</a>
+
+                    </div>
+                </div>-->
+
+
+                <a href="{% url 'index' %}" class="nav-item nav-link">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+

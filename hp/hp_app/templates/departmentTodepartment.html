@@ -1,0 +1,481 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>STORE MANAGEMENT HPCL HUBLI LPG PLANT</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+<style>
+
+/* Ensure the body takes up the full height of the viewport */
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 100vh; /* Ensure the body covers the full height of the page */
+}
+
+/* Create the watermark effect */
+body::before {
+    content: "";
+    position: fixed; /* Use fixed to ensure it covers the entire screen, even on scrolling */
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: url('{% static "img/logo.jpg" %}') no-repeat center center;
+    background-size: cover; /* Cover the entire background */
+    opacity: 0.1; /* Adjust opacity for faint watermark effect */
+    pointer-events: none; /* Prevent it from blocking interactions */
+    z-index: -1; /* Ensure it's behind all content */
+}
+
+        /* Add border styling to the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 2px solid #34495e;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        th {
+            background-color: #2A3663;
+            color: #ffffff;
+        }
+
+        td {
+            background-color: #f4f4f4;
+            color: #34495e;
+        }
+
+        /* Optionally add hover effect to table rows */
+        tr:hover {
+            background-color: #e8e8e8;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            font-weight: bold;
+        }
+
+        /* Style the labels */
+       .form-label {
+    font-weight: bold !important; /* Force bold styling */
+    font-size: 1.1rem;
+    color: #2A3663;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+
+        /* Style the input fields */
+        .form-control {
+            border-radius: 5px; /* Rounded corners for input fields */
+            border: 2px solid #ccc; /* Light grey border */
+            padding: 10px; /* Slight padding for better spacing */
+        }
+
+        .form-control:focus {
+            border-color: #2A3663; /* Focus border color */
+            box-shadow: 0 0 5px rgba(42, 54, 99, 0.5); /* Add shadow effect when focused */
+        }
+    </style>
+
+
+</head>
+
+
+    <script>
+        // New function to fetch sender details when a name is selected
+function fetchvendorDetails() {
+    const vendor = document.getElementById('vendor').value;
+
+    if (vendor) {
+        fetch(`/get_vendor_details?name=${encodeURIComponent(vendor)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched sender details:', data); // Debugging: Check the data in the console
+
+                // Populate the form fields with the fetched data
+                document.getElementById('vendorcompany').value = data.companyName || '';
+                           })
+            .catch(error => console.error('Error fetching sender details:', error));
+    }
+}
+
+
+function fetchspareDetails() {
+    const sparetpart = document.getElementById('sparetpart').value;
+
+    if (sparetpart) {
+        fetch(`/get_spare_details?name=${encodeURIComponent(sparetpart)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched spare part details:', data); // Debugging: Check the data in the console
+
+                // Populate the spare part No field
+                document.getElementById('sparetpartNo').value = data.sparepartNo || '';
+
+                // Populate the spare part size dropdown
+                const sparepartsizeDropdown = document.getElementById('sparepartsize');
+                sparepartsizeDropdown.innerHTML = ''; // Clear existing options
+
+                // Add default "Select" option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select Size --';
+                sparepartsizeDropdown.appendChild(defaultOption);
+
+                // Add new options based on fetched sizes
+                if (data.sparepartsize && Array.isArray(data.sparepartsize)) {
+                    data.sparepartsize.forEach(size => {
+                        let option = document.createElement('option');
+                        option.value = size;
+                        option.textContent = size;
+                        sparepartsizeDropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching spare part details:', error));
+    }
+}
+
+    </script>
+    <script>
+function fetchempDetails() {
+    const department = document.getElementById('department').value;
+
+    if (department) {
+        fetch(`/get_dept_emp?name=${encodeURIComponent(department)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched employee names:', data); // Debugging: Check the fetched data
+
+                // Get the employee dropdown
+                const nameDropdown = document.getElementById('name');
+                nameDropdown.innerHTML = ''; // Clear existing options
+
+                // Add default "Select" option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select Employee --';
+                nameDropdown.appendChild(defaultOption);
+
+                // Add new options for employee names
+                if (data.fullname && Array.isArray(data.fullname)) {
+                    data.fullname.forEach(employee => {
+                        let option = document.createElement('option');
+                        option.value = employee;
+                        option.textContent = employee;
+                        nameDropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching employee details:', error));
+    } else {
+        // If no department is selected, clear the employee dropdown
+        const nameDropdown = document.getElementById('name');
+        nameDropdown.innerHTML = ''; // Clear existing options
+        let defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '-- Select Employee --';
+        nameDropdown.appendChild(defaultOption);
+    }
+}
+</script>
+    <script>
+function fetchempDetails() {
+    const fromdepartment = document.getElementById('fromdepartment').value;
+
+    if (fromdepartment) {
+        fetch(`/get_dept_emp?name=${encodeURIComponent(fromdepartment)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched employee names:', data); // Debugging: Check the fetched data
+
+                // Get the employee dropdown
+                const nameDropdown = document.getElementById('fromname');
+                nameDropdown.innerHTML = ''; // Clear existing options
+
+                // Add default "Select" option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select Employee --';
+                nameDropdown.appendChild(defaultOption);
+
+                // Add new options for employee names
+                if (data.fullname && Array.isArray(data.fullname)) {
+                    data.fullname.forEach(employee => {
+                        let option = document.createElement('option');
+                        option.value = employee;
+                        option.textContent = employee;
+                        nameDropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching employee details:', error));
+    } else {
+        // If no department is selected, clear the employee dropdown
+        const nameDropdown = document.getElementById('fromname');
+        nameDropdown.innerHTML = ''; // Clear existing options
+        let defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '-- Select Employee --';
+        nameDropdown.appendChild(defaultOption);
+    }
+}
+</script>
+
+
+<script>
+function fetchempDetailsto() {
+    const todepartment = document.getElementById('todepartment').value;
+
+    if (todepartment) {
+        fetch(`/get_dept_emp?name=${encodeURIComponent(todepartment)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched employee names:', data); // Debugging: Check the fetched data
+
+                // Get the employee dropdown
+                const nameDropdown = document.getElementById('toname');
+                nameDropdown.innerHTML = ''; // Clear existing options
+
+                // Add default "Select" option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select Employee --';
+                nameDropdown.appendChild(defaultOption);
+
+                // Add new options for employee names
+                if (data.fullname && Array.isArray(data.fullname)) {
+                    data.fullname.forEach(employee => {
+                        let option = document.createElement('option');
+                        option.value = employee;
+                        option.textContent = employee;
+                        nameDropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching employee details:', error));
+    } else {
+        // If no department is selected, clear the employee dropdown
+        const nameDropdown = document.getElementById('toname');
+        nameDropdown.innerHTML = ''; // Clear existing options
+        let defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '-- Select Employee --';
+        nameDropdown.appendChild(defaultOption);
+    }
+}
+</script>
+
+<body>
+    {% include 'admin_nav.html' %}
+     {% if error_message %}
+        <script type="text/javascript">
+            alert("{{ error_message }}");  // Display the error message in a pop-up
+        </script>
+    {% endif %}
+<div class="container mt-5">
+<form method="post" action="{% url 'departmentTodepartment' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Vendor and Details -->
+    <div class="row">
+
+
+    <!-- Spare Part Details -->
+
+
+      <div class="col-md-3">
+            <div class="form-group">
+                <label for="fromdepartment">Select Department</label>
+                <select class="form-control" id="fromdepartment" name="fromdepartment" onchange="fetchempDetails()">
+                    <option value="">--  From --</option>
+                    {% for department in department %}
+                        <option value="{{ department.department }}">{{ department.department }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+    <div class="form-group">
+    <label for="fromname">Received From</label>
+    <select class="form-control" id="fromname" name="fromname">
+        <option value="">-- Select Employee --</option>
+        <!-- Employee names will be populated dynamically -->
+    </select>
+</div>
+</div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="todepartment">Select Department</label>
+                <select class="form-control" id="todepartment" name="todepartment" onchange="fetchempDetailsto()">
+                    <option value="">--  To --</option>
+                    {% for department in department %}
+                        <option value="{{ department.department }}">{{ department.department }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+    <div class="form-group">
+    <label for="toname">Received By</label>
+    <select class="form-control" id="toname" name="toname">
+        <option value="">-- Select Employee --</option>
+        <!-- Employee names will be populated dynamically -->
+    </select>
+</div>
+</div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="machine">Select Machine</label>
+                <select class="form-control" id="machine" name="machine">
+                    <option value="">-- Select Machine --</option>
+                    {% for machine in machine %}
+                        <option value="{{ machine.machine }}">{{ machine.machine }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+            <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpart">Spare Part</label>
+                <select class="form-control" id="sparetpart" name="sparetpart" onchange="fetchspareDetails()">
+                    <option value="">-- Select --</option>
+                    {% for spareParts in spareParts %}
+                        <option value="{{ spareParts.sparepart }}">{{ spareParts.sparepart }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sparetpartNo">Spare Part No</label>
+                <input type="text" class="form-control" id="sparetpartNo" name="sparetpartNo">
+            </div>
+        </div>
+        <div class="col-md-3">
+    <div class="form-group">
+        <label for="sparepartsize">Spare Part Size</label>
+        <select class="form-control" id="sparepartsize" name="sparepartsize">
+            <option value="">-- Select Size --</option>
+            <!-- Sizes will be populated dynamically -->
+        </select>
+    </div>
+</div>
+
+               <div class="col-md-3">
+            <div class="form-group">
+                <label for="issuedqty">Issued Quantity</label>
+                <input type="number" step="any" class="form-control" id="issuedqty" name="issuedqty">
+            </div>
+        </div>
+       <div class="col-md-3">
+            <div class="form-group">
+                <label for="quantity">Received Quantity</label>
+                <input type="number" step="any" class="form-control" id="quantity" name="quantity">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="balancedqty">Balance Quantity</label>
+                <input type="number" step="any" class="form-control" id="balancedqty" name="balancedqty" readonly>
+            </div>
+        </div>
+<div class="col-md-3">
+            <div class="form-group">
+                <label for="remark">Remark</label>
+                <input type="text" class="form-control" id="remark" name="remark">
+            </div>
+        </div>
+
+    </div>
+
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updateBalance() {
+            const quantity = parseFloat($('#quantity').val()) || 0;  // Default to 0 if not a valid number
+            const issuedQty = parseFloat($('#issuedqty').val()) || 0;  // Default to 0 if not a valid number
+
+            // Debugging logs to check if values are correctly captured
+            console.log('Quantity:', quantity);
+            console.log('Issued Quantity:', issuedQty);
+
+            // Calculate the balance
+            const balance = issuedQty -quantity;
+
+            // Update the balance field
+            $('#balancedqty').val(balance);
+
+            // Log the calculated balance to confirm
+            console.log('Calculated Balance:', balance);
+        }
+
+        // Attach the 'input' event to both fields
+        $(document).ready(function() {
+            $('#quantity, #issuedqty').on('input', updateBalance);
+        });
+    </script>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/isotope/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- JavaScript for toggling Employee Dashboard -->
+
+</body>
+
+</html>
+
